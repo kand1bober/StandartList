@@ -1,5 +1,6 @@
 #include "../list_obj/list_func.h"
 #include "../list_obj/list_info.h"
+#include "../list_obj/list_dot.h"
 
 int main()
 {
@@ -32,7 +33,8 @@ ListInfo_t Run()
     AddNode( my_list, data, number );
 
     TextListDump( my_list );
-    // printf("Your node: %.2lf\n", GetNode( my_list, number )->data );
+
+    ListDot( my_list );
 
     ListDtor( my_list );
 
