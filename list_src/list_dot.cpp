@@ -35,7 +35,7 @@ ListInfo_t BeginDotOutput( File_text* file )
 
     //=== Write node settings ===
     fprintf(file->stream, "digraph G\n{\nlabel=\"%s\";\n labelloc=\"t\";\n fontsize=30\n fontname=\"%s\";\n fontcolor=\"%s\"\n"
-    "\nrankdir=LR; splines=ortho; rank = same; size=\"200,200\";bgcolor=\"%s\";\n", graph_header, fontname, fontcolor, bgcolor); //splines=polyline
+    "\nrankdir=LR; splines=ortho; size=\"200,300\"; bgcolor=\"%s\";\n", graph_header, fontname, fontcolor, bgcolor);
     //===========================
 
     return GOOD;
@@ -65,33 +65,38 @@ ListInfo_t DotDriver( List_t* list, File_text* file )
 
 ListInfo_t DotCollector( List_t* list, File_text* file )
 {
-    List_t* curr_node = list;
+    //=== Description ===
+    fprintf( file->stream, "{ node_%p [shape = record; style=\"rounded, filled\", fillcolor=\"%s\", color=\"%s\", label=\" { Phantom } | { data: %lX } | { <curr%p> curr: %p } | { { <prev%p> prev: %p } | { <next%p> next: %p } }  \"] \n}\n",
+                            list, first_fillcolor, default_pointer_color, ( uint64_t )list->data, list, list, list, list->prev, list, list->next );
+    //===================
 
-    int nodes_count = -1;
+    List_t* curr_node = list->next;
+    int nodes_count = 0;
     while( 1 )
     {
         //=== Description ===
-        fprintf( file->stream, "node_%p [shape = record, style=\"rounded, filled\", fillcolor=\"%s\", color=\"%s\", label=\" { <num%d> num: %d } | { <data%.2lf> data: %.2lf } | { <curr%p> curr: %p } | { { <prev%p> prev: %p } | { <next%p> next: %p } }  \"] \n", 
+        fprintf( file->stream, "node_%p [shape = record; style=\"rounded, filled\", fillcolor=\"%s\", color=\"%s\", label=\" { <num%d> num: %d } | { <data%.2lf> data: %.2lf } | { <curr%p> curr: %p } | { { <prev%p> prev: %p } | { <next%p> next: %p } }  \"] \n", 
                  curr_node, third_fillcolor, default_pointer_color, nodes_count, nodes_count, curr_node->data, curr_node->data, curr_node, curr_node, curr_node, curr_node->prev, curr_node, curr_node->next );
         //===================
 
         curr_node = curr_node->next;
-        if( curr_node == list )
+        if( curr_node == list ) 
         {
             break;
         }
 
         nodes_count++;
     }
+    fprintf( file->stream, "\n" );
+
 
     List_t* left_node = list;
     List_t* right_node = left_node->next;
-
     while( 1 )
     {
         //=== Arrows ===
-        fprintf( file->stream, "node_%p -> node_%p [color =\"%s\", arrowsize = 1];\n", left_node, left_node->next, first_fillcolor );
-        fprintf( file->stream, "node_%p -> node_%p [color =\"%s\", arrowsize = 1];\n", left_node, left_node->prev, second_fillcolor );
+        fprintf( file->stream, "node_%p -> node_%p [color =\"%s\"];\n", left_node, left_node->next, first_fillcolor );
+        fprintf( file->stream, "node_%p -> node_%p [color =\"%s\"];\n", left_node, left_node->prev, second_fillcolor );
         //==============
 
         if( right_node == list )

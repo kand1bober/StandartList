@@ -35,6 +35,47 @@ ListInfo_t Run()
     TextListDump( my_list );
 
     ListDot( my_list );
+    getchar();
+
+    number = 2;
+    DeleteNode( my_list, number );
+    ListDot( my_list );
+    getchar();
+
+    number = 1;
+    DeleteNode( my_list, number );
+    ListDot( my_list );
+    getchar();
+
+    number = 0;
+    DeleteNode( my_list, number );
+    ListDot( my_list );
+    getchar();
+
+    data = 11;
+    number = 0;
+    AddNode( my_list, data, number );
+    ListDot( my_list );
+    getchar();
+
+
+    data = 22;
+    number = 1;
+    AddNode( my_list, data, number );
+    ListDot( my_list );
+    getchar();
+
+    data = 33;
+    number = 2;
+    AddNode( my_list, data, number );
+    ListDot( my_list );
+    getchar();
+
+    data = 67;
+    number = 2;
+    AddNode( my_list, data, number );
+    ListDot( my_list );
+    getchar();
 
     ListDtor( my_list );
 
