@@ -15,17 +15,24 @@ ListInfo_t Run()
 
     my_list = ListCtor();
 
-    int number = 1;
+    ListData_t data = 0;
+    int number = 0;
 
-    ListData_t data = LIST_POISON;
-
+    data = 11;
+    number = 0;
     AddNode( my_list, data, number );
 
-    DeleteNode( my_list, number );
+
+    data = 22;
+    number = 1;
+    AddNode( my_list, data, number );
+
+    data = 33;
+    number = 2;
+    AddNode( my_list, data, number );
 
     TextListDump( my_list );
-
-    printf("Your node: %.2lf\n", GetNode( my_list, number )->data );
+    // printf("Your node: %.2lf\n", GetNode( my_list, number )->data );
 
     ListDtor( my_list );
 
@@ -47,16 +54,12 @@ List_t* CreateNode( ListData_t data )
 
 List_t* ListCtor()
 {
-    List_t* front = CreateNode( 67 );
-    List_t* back = CreateNode( 23 );
+    List_t* phantom = CreateNode( LIST_POISON );
 
-    front->next = back;
-    front->prev = back;
-    
-    back->next = front;
-    back->prev = front;
+    phantom->next = phantom;
+    phantom->prev = phantom;
 
-    return front;
+    return phantom;
 }
 
 
@@ -74,13 +77,13 @@ ListInfo_t ListDtor( List_t* list )
 
     return GOOD;
 }
-
+ 
 
 List_t* GetNode( List_t* list, int number )
 {
     List_t* curr_node = list;
 
-    for( int i = 0; i < number; i++ )
+    for( int i = 0; i < number + 1; i++ ) //TODO: по-хорошему сюда проверку на то, что номер элемента не больше, чем последний + 1
     {
         curr_node = curr_node->next; 
     }
@@ -93,7 +96,7 @@ ListInfo_t AddNode( List_t* list, ListData_t data, int number )
 {
     List_t* new_node = CreateNode( data );
 
-    List_t* tmp_node = GetNode( list, number);
+    List_t* tmp_node = GetNode( list, number );
 
     new_node->prev = tmp_node->prev;
     tmp_node->prev->next = new_node;
@@ -123,6 +126,8 @@ ListInfo_t TextListDump( List_t* list )
     List_t* curr_node = list;
 
     printf("||================\n");
+    printf("||   %lX --- phantom\n\n", (uint64_t )curr_node->data );
+    curr_node = curr_node->next;
     while( curr_node->next != list ) 
     {
         printf("||   %.2lf   \n"
